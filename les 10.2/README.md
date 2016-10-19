@@ -1,6 +1,6 @@
 <h3>Telegram bot</h3>
 Usage:
-
+npm install
 node server.js
 
 <p>Or you can find @antip_bot in telegram</p>
