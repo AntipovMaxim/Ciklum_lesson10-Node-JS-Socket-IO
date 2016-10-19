@@ -1,12 +1,19 @@
-<h3>Telegram bot</h3>
-Usage:
+<h2>Chat</h2>
 
-node server.js
+<h3>Getting started:</h3>
 
-<p>Or you can find @antip_bot in telegram</p>
-<p>Input /c math ex in telegram chat</p>
+<ul>
+<li>npm install</li>
+<li>node index.js</li>
+<li>Open a browser on port 3000(http://localhost:3000)</li>
+</ul>
 
-<p>Example: /c 1+1</p>
+
+<h3>Technologies has used:</h3>
+
+<li>Node JS</li>
+<li>Socket IO</li>
+
 
 
 
