@@ -4,7 +4,7 @@
 
 <ul>
 <li>npm install</li>
-<li>node index.js</li>
+<li>node server.js</li>
 <li>Open a browser on port 3000(http://localhost:3000)</li>
 </ul>
 
