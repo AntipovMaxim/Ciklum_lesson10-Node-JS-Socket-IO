@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Login</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
+	<style>
+		.wrap{display: flex; flex-direction: column; align-items: center; margin-top: 100px;}
+		body{background: #F57F20; }
+
+
+	</style> 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<script src="/socket.io/socket.io.js"></script>
+
+<body>
+
+<div class="wrap">
+	<h1>Ciklum Chat</h1>
+	<form class="form-inline" >
+		<input type="text" id="login" class="form-control" required placeholder="Your nickname?">
+		<button class="btn btn-primary">Chat</button>
+	</form>
+</div>
+	
+
+	<script>
+		var login = document.getElementById('login');
+		var form = document.getElementsByTagName('form')[0];
+		var socket = io('http://localhost:3000/login');
+
+		form.addEventListener('submit', function (e) {
+			e.preventDefault();
+
+			socket.emit('login', login.value);
+            
+            socket.on('in', function(){
+			
+			location.href = "/chat";
+
+		})
+
+            socket.on('out', function () {
+            	alert('Chat is full, please come later')
+            	login.value = '';
+            })
+            
+		})
+
+		
+	</script>
+</body>
+</html>
+
+

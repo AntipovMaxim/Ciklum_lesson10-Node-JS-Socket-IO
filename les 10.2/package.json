@@ -1,0 +1,16 @@
+{
+  "name": "bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Antipov",
+  "license": "ISC",
+  "devDependencies": {
+    "mathjs": "^3.5.3",
+    "node-telegram-bot-api": "^0.24.0",
+    "nodemon": "^1.11.0"
+  }
+}

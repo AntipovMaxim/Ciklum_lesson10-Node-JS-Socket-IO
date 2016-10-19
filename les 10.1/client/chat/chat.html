@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Chat-Room</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
+	 <style>
+    
+      ul{list-style: none;}
+    
+      .wrap{flex-wrap: wrap;
+        display: flex;
+  		  flex-direction: column;
+  		  min-height: 100vh;  /* высота веб-страницы больше или равна высоте окна браузера */
+  		  margin: 0;
+  		  padding: 0 150px
+      }
+      
+      .room{flex: 1; display: flex; }
+      .users_box{
+         width: 20%;
+         background: #E8E8E8;
+         min-width: 150px;
+         
+      }
+
+      .chat_box{
+         width: 80%;
+         flex-grow: 1;
+         background: #3E3246;
+         min-width: 250px;
+         overflow: scroll;
+      }
+
+      #messages{
+      	display: flex;
+      	flex-direction: column;
+        flex-wrap: wrap;
+        word-wrap: break-word;
+      }
+
+      .current{align-self: flex-end; background: #C7EDFC; border-radius: 5px; padding: 5px; margin-bottom: 5px; }
+
+      .another{align-self: flex-start;
+       background: #F0F4F8; 
+       border-radius: 5px;
+       padding: 5px; 
+       margin-bottom: 5px;
+       width: 90%;
+       display: flex; 
+       flex-direction: column;
+       }
+
+      .another p{
+        word-wrap: break-word;
+        margin-bottom: 5px
+      }
+
+      .current p{
+        word-wrap: break-word;
+        margin-bottom: 5px
+      }
+
+
+      form{
+      	display: flex;
+      	margin-bottom: 20px;
+        min-width: 400px;
+      }
+
+      form input{
+      	flex-grow: 1;
+      	align-self: flex-end;
+      	border: 2px solid #0690D5;
+      }
+
+      .name{
+      	background: #fff !important;
+      	color: #0690D5;
+      	margin-bottom: 5px;
+      	font-weight: 700;
+      }
+
+      body{background: #F57F20;}
+
+      h1{color: #3E3246; text-align: center; margin-top: 10px}
+      
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<body>
+	
+    <div class="wrap">
+    	<h1>Chat Room</h1>
+    	
+    	<div class="room">
+    		<div class="users_box">
+	          <h4>Users:</h4>
+	    	  <ul id="users"></ul>
+            </div> 
+
+           <div class="chat_box">
+    	      <div id="messages"></div>
+           </div>
+    	</div>
+    
+<div class="form">
+	    <form class="form-inline">
+	      <input class="form-control" id="m" autocomplete="off" /><button class="btn btn-info">Send</button>
+	    </form>
+</div>
+	  
+    </div>
+
+	<script>
+		var socket = io('http://localhost:3000/chat');
+		var messages = document.getElementById('messages');
+		var users = document.getElementById('users');
+		var message = document.getElementById('m');
+		var form = document.getElementsByTagName('form')[0];
+
+//FIRST LOAD
+		socket.on('firstLoad', function(data){
+
+					
+            for( let mes of data.messages ){
+            	messages.innerHTML += renderMessage(mes);
+            }
+
+            for( let user of data.users ){
+            	users.innerHTML += `<li>${user.name}</li>`;
+            }
+
+		
+
+		})
+
+    //ADD TO USERS BOX
+
+		socket.on('addUserBox', function (data) {
+			console.log(data);
+			users.innerHTML = '';
+			for( let user of data ){
+            	
+            	users.innerHTML += `<li>${user.name}</li>`;
+            }
+		})
+
+
+
+ //USER DISCONNECT
+
+		socket.on('userDisconnect', function (data) {
+
+			users.innerHTML = '';
+			for( let user of data.users ){
+            	
+            	users.innerHTML += `<li>${user.name}</li>`;
+            }
+
+            messages.innerHTML += `<div class="another">${data.user} disconnected...  <small>${data.time}</small></div>`;
+
+
+		})
+
+
+//ADD MESSAGE TO THE CHAT THAT USER CONNECTED
+
+		socket.on('addUser', function (data) {
+			 messages.innerHTML += `<div class="another">${data.name} connected  <small>${data.time}</small></div>`;
+			 
+
+		})
+        
+        form.addEventListener('submit', function (e) {
+			e.preventDefault();
+            
+            socket.emit('message', message.value);
+
+			     message.value = '';
+
+		})
+
+
+  //ADD MESSAGE TO THE CHAT
+
+		socket.on('message', function(mes){
+
+			messages.innerHTML += renderMessage(mes);
+			
+		})
+
+		socket.on('current', function(mes){
+			
+			messages.innerHTML += `<div class="current"><p>${mes.message}</p> <small>${mes.time}</small></div>`;
+			
+		})
+
+
+//HELPER FUNCTION RENDER MESSAGES
+		function renderMessage (message) {
+			return (
+                   
+                   `<div class="another">
+                     <p class="name">${message.name}</p>
+                     <p>${message.message}</p> 
+                     <small>${message.time}</small>
+                   </div>`
+
+				)
+		}
+
+	</script>
+</body>
+</html>
